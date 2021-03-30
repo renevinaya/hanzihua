@@ -8,4 +8,4 @@ database. This database is backed up by my home server Raspberry Pi. So, the han
 creates pages for the 31 words with the lowest score. The page is switched daily.
 
 ## What does hanzihua mean?
-Hnzì huà (written 汉字画) means painting with Chinese letter.
+Hànzì huà (written 汉字画) means painting with Chinese letter.
