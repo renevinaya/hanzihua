@@ -18,7 +18,7 @@ URL_PLECO_FLASHCARD_DATABASE: str = 'http://raspi4/sync/phone/pleco/databases/Pl
 FONT_CHINESE: ImageFont = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc', 140)
 FONT_LATIN: ImageFont = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf', 30)
 HEIGHT: int = 384
-WIDTH: int = 600
+WIDTH: int = 640
 
 SIZE: (int, int) = (WIDTH, HEIGHT)
 CENTER_HEIGHT: int = int(HEIGHT/2)
