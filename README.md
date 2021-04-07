@@ -11,4 +11,4 @@ creates pages for the 31 words with the lowest score. The page is switched daily
 Hànzì huà (written 汉字画) means painting with Chinese letter.
 
 ## Setup
-Check the [docs](docs/]) for more details
+Check the [documentation](doc/) for more details.
