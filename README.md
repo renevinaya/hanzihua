@@ -9,3 +9,6 @@ creates pages for the 31 words with the lowest score. The page is switched daily
 
 ## What does hanzihua mean?
 Hànzì huà (written 汉字画) means painting with Chinese letter.
+
+## Setup
+Check the [docs](docs/]) for more details
