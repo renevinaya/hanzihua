@@ -70,9 +70,9 @@ def create_page(day_of_month, defn, hw, pron) -> bool:
     # Draw image for each day
     image: Image = Image.new("1", SIZE, color=1)
     draw: ImageDraw = ImageDraw.Draw(image)
-    draw_centered_text(CENTER_HEIGHT - 40, hw, FONT_CHINESE, draw)
-    draw_centered_text(CENTER_HEIGHT - 160, pron, FONT_LATIN, draw)
-    draw_centered_text(CENTER_HEIGHT + 140, defn, FONT_LATIN, draw)
+    draw_centered_text(CENTER_HEIGHT - 30, hw, FONT_CHINESE, draw)
+    draw_centered_text(CENTER_HEIGHT - 150, pron, FONT_LATIN, draw)
+    draw_centered_text(CENTER_HEIGHT + 150, defn, FONT_LATIN, draw)
     image.save(f"out/{day_of_month}.gif")
     image.close()
     return True
