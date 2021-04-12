@@ -64,7 +64,8 @@ def create_page(day_of_month, defn, hw, pron) -> bool:
     defn: str = defn.split(';')[0]
     defn: str = defn.split('/')[0]
     defn: str = defn.strip()
-    print(hw, pron, defn)
+    if len(defn) > 30:
+        return False
 
     # Draw image for each day
     image: Image = Image.new("1", SIZE, color=1)
