@@ -21,8 +21,8 @@ HEIGHT: int = 384
 WIDTH: int = 640
 
 SIZE: (int, int) = (WIDTH, HEIGHT)
-CENTER_HEIGHT: int = int(HEIGHT/2)
-CENTER_WIDTH: int = int(WIDTH/2)
+CENTER_HEIGHT: int = int(HEIGHT / 2)
+CENTER_WIDTH: int = int(WIDTH / 2)
 
 
 def main():
@@ -40,16 +40,20 @@ def main():
 
         day_of_month: int = 1
         for hw, pron, defn in cards:
-            # Tidy up
+            # Try to create page
             if create_page(day_of_month, defn, hw, pron):
                 day_of_month += 1
+            if day_of_month == 32:
+                break
     # Tidy up
     os.unlink(database_file)
 
 
 def create_page(day_of_month, defn, hw, pron) -> bool:
+    # Tidy up
     hw: str = hw.replace('@', '')
-    if len(hw)>3:
+    if len(hw) > 3:
+        # Skip long words
         return False
     pron: str = pron.replace('@', '')
     pron: str = transcriptions.numbered_to_accented(pron)
@@ -68,15 +72,15 @@ def create_page(day_of_month, defn, hw, pron) -> bool:
     draw_centered_text(CENTER_HEIGHT - 40, hw, FONT_CHINESE, draw)
     draw_centered_text(CENTER_HEIGHT - 160, pron, FONT_LATIN, draw)
     draw_centered_text(CENTER_HEIGHT + 140, defn, FONT_LATIN, draw)
-    image.save("out/{0:1d}.gif".format(day_of_month))
+    image.save(f"out/{day_of_month}.gif")
     image.close()
     return True
 
 
 def draw_centered_text(y: Union[int, float], text: str, font: ImageFont, draw: ImageDraw):
     width_of_text, height_of_text = font.getsize(text)
-    x_position: int = int((WIDTH-width_of_text)/2)
-    y_position: int = int(y - (height_of_text/2))
+    x_position: int = int((WIDTH - width_of_text) / 2)
+    y_position: int = int(y - (height_of_text / 2))
     draw.text((x_position, y_position), text, fill=0, font=font)
 
 
