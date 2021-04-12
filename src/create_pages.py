@@ -15,8 +15,8 @@ from typing import Union
 
 # Settings
 URL_PLECO_FLASHCARD_DATABASE: str = 'http://raspi4/sync/phone/pleco/databases/Pleco%20Flashcard%20Database.pqb'
-FONT_CHINESE: ImageFont = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc', 140)
-FONT_LATIN: ImageFont = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf', 30)
+FONT_CHINESE: ImageFont = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc', 200)
+FONT_LATIN: ImageFont = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf', 40)
 HEIGHT: int = 384
 WIDTH: int = 640
 
@@ -36,19 +36,21 @@ def main():
         # Use flash cards with hard coded definition only
         cards = database.cursor().execute(
             'select c.hw, c.pron, c.defn from pleco_flash_scores_1 s, pleco_flash_cards c ' +
-            'where c.id = s.card and c.defn NOT NULL order by s.score limit 31')
+            'where c.id = s.card and c.defn NOT NULL order by s.score limit 60')
 
-        day_of_month: int = 0
+        day_of_month: int = 1
         for hw, pron, defn in cards:
             # Tidy up
-            day_of_month += 1
-            create_page(day_of_month, defn, hw, pron)
+            if create_page(day_of_month, defn, hw, pron):
+                day_of_month += 1
     # Tidy up
     os.unlink(database_file)
 
 
-def create_page(day_of_month, defn, hw, pron):
+def create_page(day_of_month, defn, hw, pron) -> bool:
     hw: str = hw.replace('@', '')
+    if len(hw)>3:
+        return False
     pron: str = pron.replace('@', '')
     pron: str = transcriptions.numbered_to_accented(pron)
     defn: str = defn.split('\n')[0]
@@ -63,11 +65,12 @@ def create_page(day_of_month, defn, hw, pron):
     # Draw image for each day
     image: Image = Image.new("1", SIZE, color=1)
     draw: ImageDraw = ImageDraw.Draw(image)
-    draw_centered_text(CENTER_HEIGHT - 20, hw, FONT_CHINESE, draw)
-    draw_centered_text(CENTER_HEIGHT - 120, pron, FONT_LATIN, draw)
-    draw_centered_text(CENTER_HEIGHT + 120, defn, FONT_LATIN, draw)
+    draw_centered_text(CENTER_HEIGHT - 40, hw, FONT_CHINESE, draw)
+    draw_centered_text(CENTER_HEIGHT - 160, pron, FONT_LATIN, draw)
+    draw_centered_text(CENTER_HEIGHT + 140, defn, FONT_LATIN, draw)
     image.save("out/{0:1d}.gif".format(day_of_month))
     image.close()
+    return True
 
 
 def draw_centered_text(y: Union[int, float], text: str, font: ImageFont, draw: ImageDraw):
