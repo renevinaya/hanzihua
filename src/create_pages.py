@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 # This script is meant to be run by cron monthly
-import typing
 
 import requests
 import sqlite3
@@ -12,7 +11,7 @@ from dragonmapper import transcriptions
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-from typing import Union, Dict, Tuple
+from typing import Union, Dict, List
 
 # Settings
 URL_PLECO_FLASHCARD_DATABASE: str = 'http://raspi4/sync/phone/pleco/databases/Pleco%20Flashcard%20Database.pqb'
@@ -21,6 +20,8 @@ FONT_CHINESE: ImageFont = ImageFont.truetype('/usr/share/fonts/opentype/noto/Not
 FONT_LATIN: ImageFont = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf', 40)
 HEIGHT: int = 384
 WIDTH: int = 640
+# parts of the display are covered by the frame
+MAX_WIDTH: int = 540
 
 SIZE: (int, int) = (WIDTH, HEIGHT)
 CENTER_HEIGHT: int = int(HEIGHT / 2)
@@ -50,15 +51,16 @@ def main():
     os.unlink(pleco_database_file)
 
 
-def create_page(day_of_month, defn, hw, pron) -> bool:
+def create_page(day_of_month: int, defn: str, hw: str, pron: str) -> bool:
     # Tidy up
-    hw: str = hw.replace('@', '')
+    hw = hw.replace('@', '')
     if len(hw) > 3:
         # Skip long words
         print('Too long Chinese:', hw)
         return False
-    pron: str = pron.replace('@', '')
-    pron: str = transcriptions.numbered_to_accented(pron)
+    pron = pron.replace('@', '')
+    pron = pron.replace('/', '')
+    pron = transcriptions.numbered_to_accented(pron)
     if defn is None:
         if hw in CE_CCDICT:
             defn = CE_CCDICT[hw]
@@ -66,15 +68,15 @@ def create_page(day_of_month, defn, hw, pron) -> bool:
             print('No Translation:', hw, pron)
             return False
     else:
-        defn: str = defn.split('\n')[0]
-        defn: str = defn.replace('• ', '')
-        defn: str = defn.split('  ')[0]
-        defn: str = defn.split(',')[0]
-        defn: str = defn.split(';')[0]
-        defn: str = defn.split('/')[0]
-        defn: str = defn.strip()
+        defn = defn.split('\n')[0]
+        defn = defn.replace('• ', '')
+        defn = defn.split('  ')[0]
+        defn = defn.split(',')[0]
+        defn = defn.split(';')[0]
+        defn = defn.split('/')[0]
+        defn = defn.strip()
     width_defn, _ = FONT_LATIN.getsize(defn)
-    if width_defn > WIDTH:
+    if width_defn > MAX_WIDTH:
         print('Too long translation', hw, pron, defn)
         return False
 
@@ -107,14 +109,13 @@ def get_ce_ccdict() -> Dict[str, str]:
             # Credits:
             # https://github.com/rubber-duck-dragon/rubber-duck-dragon.github.io/blob/master/cc-cedict_parser/parser.py
             line = line.rstrip('/')
-            line = line.split('/')
-            if len(line) <= 1:
+            lines: List[str] = line.split('/')
+            if len(lines) <= 1:
                 continue
-            english = line[1]
-            char_and_pinyin = line[0].split('[')
-            characters = char_and_pinyin[0]
-            characters = characters.split()
-            simplified = characters[1]
+            english: str = lines[1]
+            char_and_pinyin: List[str] = lines[0].split('[')
+            characters: List[str] = char_and_pinyin[0].split()
+            simplified: str = characters[1]
             if "surname" != english:
                 ce_ccdict[simplified] = english
 
