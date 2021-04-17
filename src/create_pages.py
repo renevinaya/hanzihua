@@ -2,6 +2,7 @@
 
 # This script is meant to be run by cron monthly
 
+import re
 import requests
 import sqlite3
 import tempfile
@@ -14,9 +15,9 @@ from PIL import ImageFont
 from typing import Union, Dict, List
 
 # Settings
-URL_PLECO_FLASHCARD_DATABASE: str = 'http://raspi4/sync/phone/pleco/databases/Pleco%20Flashcard%20Database.pqb'
+URL_PLECO_FLASHCARD_DATABASE: str = 'http://raspi4/sync/phone/pleco/databases/flashbackup.pqb'
 URL_CC_CEDICT_DATABASE: str = 'https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz'
-FONT_CHINESE: ImageFont = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc', 200)
+FONT_CHINESE: ImageFont = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc', 190)
 FONT_LATIN: ImageFont = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf', 40)
 HEIGHT: int = 384
 WIDTH: int = 640
@@ -35,10 +36,24 @@ def main():
         with requests.get(URL_PLECO_FLASHCARD_DATABASE) as r:
             f.write(r.content)
     with sqlite3.connect(pleco_database_file) as database:
-        # Get 31 flash cards sorted by score hw=Chinese pron=Pronunciation, defn=Definition
+        # Get categories of flash cards, which are currently selected for learning
+        category_entries = database.cursor().execute(
+            'select propvalue from pleco_flash_profilesettings ' +
+            'where propid="pro_categories" and propvalue not null')
+        if category_entries.arraysize < 1:
+            print('Please select flash card categories in Pleco')
+            exit()
+        for category_entry in category_entries:
+            categories = category_entry[0][0:-1] # Remove trailing comma
+        if not re.match('[0-9,\-]', categories):
+            print('Unexpected format for category list: ', categories)
+            exit()
+
+        # Get flash cards sorted by score hw=Chinese pron=Pronunciation, defn=Definition
         cards = database.cursor().execute(
-            'select c.hw, c.pron, c.defn from pleco_flash_scores_1 s, pleco_flash_cards c ' +
-            'where c.id = s.card order by s.score limit 60')
+            'select c.hw, c.pron, c.defn ' +
+            'from pleco_flash_scores_1 s, pleco_flash_cards c, pleco_flash_categoryassigns ca ' +
+            'where c.id = s.card and c.id = ca.card and ca.cat IN(' + categories + ') order by s.score limit 60')
 
         day_of_month: int = 1
         for hw, pron, defn in cards:
