@@ -44,7 +44,7 @@ def main():
             print('Please select flash card categories in Pleco')
             exit()
         for category_entry in category_entries:
-            categories = category_entry[0][0:-1] # Remove trailing comma
+            categories = category_entry[0][0:-1]  # Remove trailing comma
         if not re.match('[0-9,\-]', categories):
             print('Unexpected format for category list: ', categories)
             exit()
@@ -131,8 +131,11 @@ def get_ce_ccdict() -> Dict[str, str]:
             char_and_pinyin: List[str] = lines[0].split('[')
             characters: List[str] = char_and_pinyin[0].split()
             simplified: str = characters[1]
-            if "surname" != english:
-                ce_ccdict[simplified] = english
+            if english.startswith('variant of'):
+                continue
+            if english.startswith('surname'):
+                continue
+            ce_ccdict[simplified] = english
 
     return ce_ccdict
 
