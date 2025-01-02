@@ -15,7 +15,7 @@ from PIL import ImageFont
 from typing import Union, Dict, List
 
 # Settings
-URL_PLECO_FLASHCARD_DATABASE: str = 'http://raspi4/sync/phone/pleco/databases/flashbackup.pqb'
+URL_PLECO_FLASHCARD_DATABASE: str = 'http://raspi4/sync/phone/pleco/flashbackup.pqb'
 URL_CC_CEDICT_DATABASE: str = 'https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz'
 FONT_CHINESE: ImageFont = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc', 190)
 FONT_LATIN: ImageFont = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf', 40)
