@@ -1,18 +1,21 @@
 #!/usr/bin/python3
-
-# This script is meant to be run by cron monthly
+"""
+Script to create the pages for each day of a month.
+Link it in /etc/cron.monthly to run it monthly. Should be run as non-root.
+"""
 
 import re
-import requests
 import sqlite3
+import sys
 import tempfile
 import os
 import gzip
+from typing import Union, Dict, List
+import requests
 from dragonmapper import transcriptions
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-from typing import Union, Dict, List
 
 # Settings
 URL_PLECO_FLASHCARD_DATABASE: str = "http://raspi4/sync/phone/pleco/flashbackup.pqb"
@@ -36,6 +39,9 @@ CENTER_WIDTH: int = int(WIDTH / 2)
 
 
 def main():
+    """
+    Main function, which downloads the Pleco Database and creates the pages for each day
+    """
     # Download Database
     _, pleco_database_file = tempfile.mkstemp(prefix="hanzihua-")
     with open(pleco_database_file, "wb") as f:
@@ -49,7 +55,7 @@ def main():
         )
         if category_entries.arraysize < 1:
             print("Please select flash card categories in Pleco")
-            exit()
+            sys.exit()
 
         categories: str | None = None
         for category_entry in category_entries:
@@ -57,7 +63,7 @@ def main():
             print(category_entry, categories)
         if categories is None or not re.match("[0-9,-]", categories):
             print("Unexpected format for category list: ", categories)
-            exit()
+            sys.exit()
 
         # Get flash cards sorted by score hw=Chinese pron=Pronunciation, defn=Definition
         cards = database.cursor().execute(
@@ -80,6 +86,10 @@ def main():
 
 
 def create_page(day_of_month: int, defn: str, hw: str, pron: str) -> bool:
+    """
+    Creates page for day of month based on database entry.
+    Cleans the defintions and return True, if page has been created.
+    """
     # Tidy up
     hw = hw.replace("@", "")
     if len(hw) > 3:
@@ -122,6 +132,9 @@ def create_page(day_of_month: int, defn: str, hw: str, pron: str) -> bool:
 def draw_centered_text(
     y: Union[int, float], text: str, font: ImageFont, draw: ImageDraw
 ):
+    """
+    Helper function to draw text horizontally centered
+    """
     width_of_text, height_of_text = font.getsize(text)
     x_position: int = int((WIDTH - width_of_text) / 2)
     y_position: int = int(y - (height_of_text / 2))
@@ -129,6 +142,9 @@ def draw_centered_text(
 
 
 def get_ce_ccdict() -> Dict[str, str]:
+    """
+    Downloads database with translations and cleans the translations
+    """
     ce_ccdict: Dict[str, str] = {}
     with requests.get(URL_CC_CEDICT_DATABASE) as r:
         ce_ccdict_bytes: bytes = gzip.decompress(r.content)
