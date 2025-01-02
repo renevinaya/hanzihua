@@ -19,7 +19,7 @@ Adding another layer of cardboard to place the Raspberry Pi 2:
 
 ## System Configuration
 
-The Raspberry Pi 2 is running on the current Raspbian OS.
+The Raspberry Pi 2 is running on the Raspberry Pi OS Lite (bookworm).
 
 You might want to add a file with the following content to ```/etc/apt/apt.conf.d/```
 to limit the amount of installed packages
@@ -29,6 +29,14 @@ APT::Get::Install-Recommends "false";
 APT::Get::Install-Suggests "false";
 ```
 
+Install updates
+
+```bash
+sudo apt update
+sudo apt dist-upgrade
+```
+
+
 Go to ```/boot/config.txt``` and add ```dtparam=spi=on```.
 
 Reboot
@@ -36,15 +44,14 @@ Reboot
 ## Install the requirements
 
 ```bash
-apt-get install python3-pip python3-pil python3-numpy git
-pip3 install RPi.GPIO spidev
-
-apt-get install fonts-noto-core fonts-noto-cjk
-pip3 install dragonmapper
+sudo apt install python3-pip python3-pil python3-numpy git fonts-noto-core fonts-noto-cjk
+pip3 install RPi.GPIO spidev dragonmapper
 ```
 
 ## Download
 
-```git clone https://github.com/renevinaya/hanzihua.git```
+```bash
+git clone https://github.com/renevinaya/hanzihua.git
+```
 
 Check source files for further actions.
