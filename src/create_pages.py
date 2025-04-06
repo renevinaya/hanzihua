@@ -130,7 +130,7 @@ def create_page(day_of_month: int, defn: str, hw: str, pron: str) -> bool:
 
 
 def draw_centered_text(
-    y: Union[int, float], text: str, font: ImageFont.FreeTypeFont, draw: ImageDraw
+    y: Union[int, float], text: str, font: ImageFont.FreeTypeFont, draw: ImageDraw.ImageDraw
 ):
     """
     Helper function to draw text horizontally centered
