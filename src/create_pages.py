@@ -113,7 +113,7 @@ def create_page(day_of_month: int, defn: str, hw: str, pron: str) -> bool:
         defn = defn.split(";")[0]
         defn = defn.split("/")[0]
         defn = defn.strip()
-    width_defn, _ = FONT_LATIN.getsize(defn)
+    width_defn = FONT_LATIN.getlength(defn)
     if width_defn > MAX_WIDTH:
         print("Too long translation", hw, pron, defn)
         return False
@@ -130,12 +130,12 @@ def create_page(day_of_month: int, defn: str, hw: str, pron: str) -> bool:
 
 
 def draw_centered_text(
-    y: Union[int, float], text: str, font: ImageFont, draw: ImageDraw
+    y: Union[int, float], text: str, font: ImageFont.FreeTypeFont, draw: ImageDraw
 ):
     """
     Helper function to draw text horizontally centered
     """
-    width_of_text, height_of_text = font.getsize(text)
+    _, _, width_of_text, height_of_text = font.getbbox(text)
     x_position: int = int((WIDTH - width_of_text) / 2)
     y_position: int = int(y - (height_of_text / 2))
     draw.text((x_position, y_position), text, fill=0, font=font)
