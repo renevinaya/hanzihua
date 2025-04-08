@@ -12,10 +12,12 @@ import os
 import gzip
 from typing import Union, Dict, List
 import requests
+import boto3
 from dragonmapper import transcriptions
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+import config
 
 # Settings
 URL_PLECO_FLASHCARD_DATABASE: str = "http://raspi4/sync/phone/pleco/flashbackup.pqb"
@@ -44,6 +46,9 @@ def main():
     """
     # Download Database
     _, pleco_database_file = tempfile.mkstemp(prefix="hanzihua-")
+
+    download_database(pleco_database_file)
+
     with open(pleco_database_file, "wb") as f:
         with requests.get(URL_PLECO_FLASHCARD_DATABASE) as r:
             f.write(r.content)
@@ -60,10 +65,10 @@ def main():
         categories: str | None = None
         for category_entry in category_entries:
             categories = category_entry[0][0:-1]  # Remove trailing comma
-            print(category_entry, categories)
         if categories is None or not re.match("[0-9,-]", categories):
             print("Unexpected format for category list: ", categories)
             sys.exit()
+        print("Categories:", categories)
 
         # Get flash cards sorted by score hw=Chinese pron=Pronunciation, defn=Definition
         cards = database.cursor().execute(
@@ -83,6 +88,23 @@ def main():
                 break
     # Tidy up
     os.unlink(pleco_database_file)
+
+def download_database(pleco_database_file):
+    s3 = boto3.client("s3", region_name=config.REGION)
+    databases = s3.list_objects_v2(
+        Bucket=config.BUCKET,
+        Prefix=config.PREFIX,
+    )
+    latest_database = databases.get("Contents", [])[0].get("Key", "")
+    for database in databases.get("Contents", []):
+        if database.get("Key", "") > latest_database:
+            latest_database = database.get("Key", "")
+    print("Latest database:", latest_database)
+    s3.download_file(
+        Bucket=config.BUCKET,
+        Key=latest_database,
+        Filename=pleco_database_file,
+    )
 
 
 def create_page(day_of_month: int, defn: str, hw: str, pron: str) -> bool:

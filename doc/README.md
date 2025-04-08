@@ -45,7 +45,7 @@ Reboot
 
 ```bash
 sudo apt install python3-pip python3-pil python3-numpy git fonts-noto-core fonts-noto-cjk
-pip3 install RPi.GPIO spidev dragonmapper
+pip3 install RPi.GPIO spidev dragonmapper boto3
 ```
 
 ## Download
