@@ -89,6 +89,7 @@ def main():
     # Tidy up
     os.unlink(pleco_database_file)
 
+
 def download_database(pleco_database_file):
     s3 = boto3.client("s3", region_name=config.REGION)
     databases = s3.list_objects_v2(
