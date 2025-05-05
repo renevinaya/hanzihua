@@ -123,6 +123,7 @@ def create_page(day_of_month: int, defn: str, hw: str, pron: str) -> bool:
     if defn is None:
         if hw in CE_CCDICT:
             defn = CE_CCDICT[hw]
+            defn = defn.split(";")[0]
         else:
             print("No Translation:", hw, pron)
             return False
