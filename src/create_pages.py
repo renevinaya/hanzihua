@@ -32,8 +32,6 @@ FONT_LATIN = ImageFont.truetype(
 )
 HEIGHT: int = 384
 WIDTH: int = 640
-# parts of the display are covered by the frame
-MAX_WIDTH: int = 540
 
 SIZE: tuple[int, int] = (WIDTH, HEIGHT)
 CENTER_HEIGHT: int = int(HEIGHT / 2)
@@ -137,7 +135,7 @@ def create_page(day_of_month: int, defn: str, hw: str, pron: str) -> bool:
         defn = defn.split("/")[0]
         defn = defn.strip()
     width_defn = FONT_LATIN.getlength(defn)
-    if width_defn > MAX_WIDTH:
+    if width_defn > WIDTH:
         print("Too long translation", hw, pron, defn)
         return False
 
