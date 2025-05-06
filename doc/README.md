@@ -5,6 +5,7 @@ I used the following hardware:
 - [Waveshare 7.5inch e-Paper HAT](https://www.waveshare.com/wiki/7.5inch_e-Paper_HAT)
 - [IKEA picture frame](https://www.ikea.com/nl/en/p/ribba-frame-white-70378414/)
 
+## 2021 Version
 The e-Paper display fits nicely into the picture frame. I cut some
 stripes of cardboard to place the display in the center of the picture
 frame:
@@ -14,6 +15,15 @@ frame:
 Adding another layer of cardboard to place the Raspberry Pi 2:
 
 ![](image2.jpg)
+
+## 2025 Version
+Use a 3D printer to print the passe-partout and the cover. The display nicely fits into the passe-partout.
+
+![](image3.jpg)
+
+Cover it with some cardboard for protection, add the Raspberry Pi and close it with the cover. The ports of the Raspberry Pi remain accessable, while it is protected from falling out.
+
+![](image4.jpg)
 
 # Software
 
