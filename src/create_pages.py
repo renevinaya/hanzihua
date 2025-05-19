@@ -184,9 +184,7 @@ def get_ce_ccdict() -> Dict[str, str]:
             char_and_pinyin: List[str] = lines[0].split("[")
             characters: List[str] = char_and_pinyin[0].split()
             simplified: str = characters[1]
-            if english.startswith("variant of"):
-                continue
-            if english.startswith("old variant of"):
+            if "variant of" in english:
                 continue
             if english.startswith("used in"):
                 continue
