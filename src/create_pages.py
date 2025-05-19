@@ -186,6 +186,10 @@ def get_ce_ccdict() -> Dict[str, str]:
             simplified: str = characters[1]
             if english.startswith("variant of"):
                 continue
+            if english.startswith("old variant of"):
+                continue
+            if english.startswith("used in"):
+                continue
             if english.startswith("surname"):
                 continue
             ce_ccdict[simplified] = english
