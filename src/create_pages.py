@@ -20,7 +20,6 @@ from PIL import ImageFont
 import config
 
 # Settings
-URL_PLECO_FLASHCARD_DATABASE: str = "http://raspi4/sync/phone/pleco/flashbackup.pqb"
 URL_CC_CEDICT_DATABASE: str = (
     "https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz"
 )
@@ -47,9 +46,6 @@ def main() -> None:
 
     download_database(pleco_database_file)
 
-    with open(pleco_database_file, "wb") as f:
-        with requests.get(URL_PLECO_FLASHCARD_DATABASE) as r:
-            f.write(r.content)
     with sqlite3.connect(pleco_database_file) as database:
         # Get categories of flash cards, which are currently selected for learning
         category_entries = database.cursor().execute(
