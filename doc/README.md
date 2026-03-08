@@ -54,14 +54,17 @@ Reboot
 ## Install the requirements
 
 ```bash
-sudo apt install python3-pip python3-pil python3-numpy git fonts-noto-core fonts-noto-cjk
-pip3 install RPi.GPIO spidev dragonmapper boto3
+sudo apt install git fonts-noto-core fonts-noto-cjk
 ```
+
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/).
 
 ## Download
 
 ```bash
 git clone https://github.com/renevinaya/hanzihua.git
+cd hanzihua
+uv sync --extra display
 ```
 
 Check source files for further actions.
