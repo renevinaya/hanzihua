@@ -13,7 +13,7 @@ import gzip
 from typing import Union, Dict, List
 import requests
 import boto3
-from dragonmapper import transcriptions
+from dragonmapper import transcriptions  # type: ignore[import-untyped]
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
@@ -38,7 +38,7 @@ CENTER_HEIGHT: int = int(HEIGHT / 2)
 CENTER_WIDTH: int = int(WIDTH / 2)
 
 
-def main():
+def main() -> None:
     """
     Main function, which downloads the Pleco Database and creates the pages for each day
     """
@@ -88,7 +88,7 @@ def main():
     os.unlink(pleco_database_file)
 
 
-def download_database(pleco_database_file):
+def download_database(pleco_database_file: str) -> None:
     s3 = boto3.client("s3", region_name=config.REGION)
     databases = s3.list_objects_v2(
         Bucket=config.BUCKET,
@@ -141,8 +141,8 @@ def create_page(day_of_month: int, defn: str, hw: str, pron: str) -> bool:
         return False
 
     # Draw image for each day
-    image: Image = Image.new("1", SIZE, color=1)
-    draw: ImageDraw = ImageDraw.Draw(image)
+    image: Image.Image = Image.new("1", SIZE, color=1)
+    draw: ImageDraw.ImageDraw = ImageDraw.Draw(image)
     draw_centered_text(CENTER_HEIGHT - 30, hw, FONT_CHINESE, draw)
     draw_centered_text(CENTER_HEIGHT - 150, pron, FONT_LATIN, draw)
     draw_centered_text(CENTER_HEIGHT + 150, defn, FONT_LATIN, draw)
@@ -153,7 +153,7 @@ def create_page(day_of_month: int, defn: str, hw: str, pron: str) -> bool:
 
 def draw_centered_text(
     y: Union[int, float], text: str, font: ImageFont.FreeTypeFont, draw: ImageDraw.ImageDraw
-):
+) -> None:
     """
     Helper function to draw text horizontally centered
     """
