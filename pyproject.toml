@@ -22,3 +22,10 @@ display = [
     "gpiozero",
     "spidev",
 ]
+
+[tool.uv]
+# idna is a transitive dependency (via requests). Versions < 3.15 are affected
+# by CVE-2026-45409, so enforce a secure floor without making it a direct dep.
+constraint-dependencies = [
+    "idna>=3.15",
+]
